@@ -25,6 +25,8 @@ var questions = [
     }
 ];
 var clickCounter = 0;
+var i = 0
+
 
 // create the question HTML elements
 var createQuestion = function (i) {
@@ -48,25 +50,24 @@ var createQuestion = function (i) {
         listSection.appendChild(listChoice);
         listChoice.addEventListener("click", function (event) {
             clickCounter++;
+            console.log("click count at " + clickCounter);
             if (clickCounter === 1) {
-                console.log("1");
-                selectHandler(event);
+                i++;
+                selectHandler(event, i);
             }
         });
     };
-
-    i++;
     document.body.appendChild(questionSection);
 };
 
-
-var selectHandler = function (event) {
+// for handling each answer choice click event
+var selectHandler = function (event, i) {
     // need validation for right or wrong
     var selection = parseInt(event.target.getAttribute("verify"));
-    console.log(selection);
     if (selection === 0) {
         var wrongEl = document.createElement("p");
         wrongEl.className = "wrong-element";
+        wrongEl.className = "validation";
         wrongEl.innerHTML = "WRONG!";
         document.body.appendChild(wrongEl);
     }
@@ -74,6 +75,7 @@ var selectHandler = function (event) {
         // create "RIGHT" element
         var rightEl = document.createElement("p");
         rightEl.className = "right-element";
+        rightEl.className = "validation";
         rightEl.innerHTML = "RIGHT!";
         document.body.appendChild(rightEl);
     }
@@ -81,26 +83,38 @@ var selectHandler = function (event) {
     nextButton.className = "btn";
     nextButton.innerHTML = "NEXT QUESTION";
     document.body.appendChild(nextButton);
+    nextButton.addEventListener("click", function () {
+        console.log("i after selectHandler = " + i);
+        clickCounter = 0;
+        var removeQuestion = document.querySelector(".question-section");
+        removeQuestion.remove();
+        var validationStatement = document.querySelector(".validation");
+        validationStatement.remove();
+        nextButton.remove();
+        createQuestion(i);
+    });
 
-    // var disableChoices = document.getElementsByClassName("question-section");
-    // disableChoices.setAttribute("disabled", "");
+    // what happens to timer after validated
 };
 
-// what happens to timer after validated
 
 // go to next question >> nextHandler
-
-// disable buttons after first click
+// var nextHandler = function (i) {
+//     console.log("i after selectHandler = " + i);
+//     // reset clickCounter to 0
+//     clickCounter = 0;
+//     console.log("click count (at nextHandler) at " + clickCounter);
+// };
 
 
 // start the quiz
 var startQuiz = function () {
     var startButton = document.querySelector("#start");
     var introSection = document.getElementById("intro");
-    var i = 0
     startButton.addEventListener("click", function () {
         introSection.remove();
         createQuestion(i);
+        console.log("starting i is "+ i);
     });
 };
 
