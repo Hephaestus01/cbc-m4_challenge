@@ -1,0 +1,18 @@
+* {
+    background-color: rgb(7, 7, 31);
+    color: bisque;
+}
+
+body {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+.btn {
+    background-color: green;
+    color: black;
+    padding: 30px 30px;
+}
