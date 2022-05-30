@@ -3,16 +3,47 @@
     color: bisque;
 }
 
-body {
+/* header styles */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 50px;
+}
+
+/* intro styles */
+#intro {
     display:flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
 }
 
+
+/* button styles */
 .btn {
     background-color: green;
     color: black;
     padding: 30px 30px;
 }
+
+.next-button {
+    display: block;
+    margin: auto;
+}
+
+/* question styles */
+.question-section,
+.validation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+/* high scores page */
+#score-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
