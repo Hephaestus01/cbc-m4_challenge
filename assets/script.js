@@ -27,7 +27,6 @@ var questions = [
 var clickCounter = 0;
 var i = 0
 var timeLeft = 60;
-var playerScore = timeLeft;
 
 
 // create the question HTML elements
@@ -102,7 +101,6 @@ var selectHandler = function (event, i) {
 
 
 var showFinalScore = function () {
-    console.log(timeLeft);
     var timer = document.getElementById("timer");
     timer.remove();
 
@@ -137,10 +135,46 @@ var showFinalScore = function () {
 };
 
 var submitHandler = function () {
-    // store initials to new array
-    scoreArray = [];
-    
+    // get existing arrays from localStorage or create new array
+    if (localStorage.getItem("high-scores") != null) {
+        var highScoreArray = JSON.parse(localStorage.getItem("high-scores"));
+        var playerArray = JSON.parse(localStorage.getItem("players"));
+        console.log("localStorage loaded ", highScoreArray);
+        console.log("localStorage loaded ", playerArray);
+    } else {
+        var highScoreArray = [];
+        var playerArray = [];
+    }
+
+    // store initials to new variable
+    var playerInits = (document.querySelector("input[name='initials']").value);
+    playerArray.push(playerInits);
+
+    var playerScore = timeLeft;
+    highScoreArray.push(playerScore);
+
+    localStorage.setItem("high-scores", JSON.stringify(highScoreArray));
+    localStorage.setItem("players", JSON.stringify(playerArray));
+
+    console.log(highScoreArray);
+    console.log(playerArray);
+
+    createHighScoreSheet(highScoreArray, playerArray);
 };
+
+var createHighScoreSheet = function (highScoreArray, playerArray) {
+    for (vari = 0; i < highScoreArray.length; i++) {
+        var scoreEl = document.createElement("div");
+        scoreEl.id = "score";
+        scoreEl.innerHTML = highScoreArray[i];
+        var playerEl = document.createElement("div");
+        playerEl.id = "player";
+        playerEl.innerHTML = playerArray[i];
+        document.body.appendChild(scoreEl);
+        document.body.appendChild(playerEl);
+    }
+    
+}
 
 
 // start the quiz
@@ -161,8 +195,6 @@ var startTime = function (i) {
         if (timeLeft > 0) {
             timeLeft--;
             document.querySelector("#timer").innerHTML = "Time: " + timeLeft;
-            // console.log(timeLeft);
-            // console.log(i);
         } else if (timeLeft === 0) {
             console.log(timeLeft);
             clearInterval(countDown);
@@ -172,10 +204,6 @@ var startTime = function (i) {
             showFinalScore();
         }
     }, 1000);
-    // var finalExist = document.getElementById('score-wrapper');
-    // if (finalExist.length) {
-    //     console.log("done");
-    // }
 
 };
 
