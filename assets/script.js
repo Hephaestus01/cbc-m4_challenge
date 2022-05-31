@@ -99,10 +99,10 @@ var selectHandler = function (event, i) {
     });
 };
 
-
 var showFinalScore = function () {
     var timer = document.getElementById("timer");
     timer.remove();
+    clickCounter = 0;
 
     var finalScoreWrapper = document.createElement("div")
     finalScoreWrapper.id = "score-wrapper";
@@ -123,8 +123,11 @@ var showFinalScore = function () {
     submitInits.className = "btn";
     submitInits.id = "submit-button";
     submitInits.textContent = "Submit";
-    submitInits.addEventListener("click", function () {
-        submitHandler();
+    submitInits.addEventListener("click", function (event) {
+        clickCounter++;
+        if (clickCounter === 1) {
+            submitHandler(event);
+        }
     });
 
     finalScoreWrapper.appendChild(finishMessage);
@@ -134,7 +137,7 @@ var showFinalScore = function () {
     document.body.appendChild(finalScoreWrapper);
 };
 
-var submitHandler = function () {
+var submitHandler = function (event) {
     // get existing arrays from localStorage or create new array
     if (localStorage.getItem("high-scores") != null) {
         var highScoreArray = JSON.parse(localStorage.getItem("high-scores"));
@@ -148,8 +151,12 @@ var submitHandler = function () {
 
     // store initials to new variable
     var playerInits = (document.querySelector("input[name='initials']").value);
-    playerArray.push(playerInits);
-
+    if (!playerInits || playerInits.length > 10 || playerInits.length < 3) {
+        alert("Enter name or initials between 3 and 10 characters to continue...")
+        return playerInits;
+    } else {
+        playerArray.push(playerInits);
+    }
     var playerScore = timeLeft;
     highScoreArray.push(playerScore);
 
@@ -163,18 +170,54 @@ var submitHandler = function () {
 };
 
 var createHighScoreSheet = function (highScoreArray, playerArray) {
-    for (vari = 0; i < highScoreArray.length; i++) {
+    var scoreTableTitle = document.createElement("div");
+    scoreTableTitle.id = "score-title";
+    scoreTableTitle.innerHTML = "HIGH SCORES";
+    document.body.appendChild(scoreTableTitle);
+
+    for (var i = 0; i < highScoreArray.length; i++) {
+        var highScoreRow = document.createElement("div");
+        highScoreRow.id = ("high-score-row");
+
         var scoreEl = document.createElement("div");
         scoreEl.id = "score";
+        scoreEl.className = "high-score-item";
         scoreEl.innerHTML = highScoreArray[i];
+
         var playerEl = document.createElement("div");
         playerEl.id = "player";
+        playerEl.className = "high-score-item";
         playerEl.innerHTML = playerArray[i];
-        document.body.appendChild(scoreEl);
-        document.body.appendChild(playerEl);
+
+        document.body.appendChild(highScoreRow);
+        highScoreRow.appendChild(scoreEl);
+        highScoreRow.appendChild(playerEl);
     }
-    
-}
+};
+
+var viewHighScores = function () {
+    if (localStorage.getItem("high-scores") != null) {
+        var highScoreArray = JSON.parse(localStorage.getItem("high-scores"));
+        var playerArray = JSON.parse(localStorage.getItem("players"));
+        console.log("localStorage loaded ", highScoreArray);
+        console.log("localStorage loaded ", playerArray);
+    } else {
+        var highScoreArray = [];
+        var playerArray = [];
+    }
+    var viewScoreEl = document.querySelector("#view-scores");
+    viewScoreEl.addEventListener("click", function () {
+        console.log("hi");
+        while (document.body.firstChild) {
+            document.body.removeChild(document.body.lastChild);
+        }
+        createHighScoreSheet(highScoreArray, playerArray);
+    });
+    // when clicked, first remove everything else from page
+
+    // then add High Score table
+
+};
 
 
 // start the quiz
@@ -185,6 +228,7 @@ var startQuiz = function () {
         introSection.remove();
         createQuestion(i);
         startTime(i);
+        viewHighScores();
     });
 };
 
@@ -204,9 +248,7 @@ var startTime = function (i) {
             showFinalScore();
         }
     }, 1000);
-
 };
 
-
-
 startQuiz();
+viewHighScores();

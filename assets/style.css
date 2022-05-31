@@ -47,3 +47,38 @@ header {
     align-items: center;
 }
 
+
+
+
+
+
+/* Final Score Layout */
+#score-title {
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+#high-score-row {
+    background: red;
+    width: 300px;
+    display:flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.high-score-item {
+    padding: 20px;
+}
+
+#player {
+    width: 50%;
+    border: 5px solid white;
+}
+
+#score {
+    width: 50%;
+    border: 5px solid white;
+    text-align: center;
+}
