@@ -7,20 +7,20 @@ var questions = [
     },
     {
         qId: 1,
-        questionPrompt: "Question2",
-        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
+        questionPrompt: "Which of the following represents and empty array?",
+        choice: ["{ }", "[ ]", "< >", "''"],
         verify: [0, 1, 0, 0]
     },
     {
         qId: 2,
-        questionPrompt: "Question3",
-        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
+        questionPrompt: "How is an interval timer stopped in JavaScript?",
+        choice: ["clearTimer", "clearTimeout", "clearInterval", "None of the above"],
         verify: [0, 0, 1, 0]
     },
     {
         qId: 3,
-        questionPrompt: "Question4",
-        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
+        questionPrompt: "How is a comment written in JavaScript",
+        choice: ["/* */", "#", "$ $", "//"],
         verify: [0, 0, 0, 1]
     }
 ];
@@ -96,6 +96,7 @@ var selectHandler = function (event, i) {
             createQuestion(i);
         } else {
             showFinalScore();
+            localStorage.setItem("final-time", JSON.stringify(timeLeft));
         }
     });
 };
@@ -124,10 +125,10 @@ var showFinalScore = function () {
     submitInits.className = "btn";
     submitInits.id = "submit-button";
     submitInits.textContent = "Submit";
-    submitInits.addEventListener("click", function (event) {
+    submitInits.addEventListener("click", function () {
         clickCounter++;
         if (clickCounter === 1) {
-            submitHandler(event);
+            submitHandler();
         }
     });
 
@@ -138,7 +139,7 @@ var showFinalScore = function () {
     document.body.appendChild(finalScoreWrapper);
 };
 
-var submitHandler = function (event) {
+var submitHandler = function () {
     // get existing arrays from localStorage or create new array
     if (localStorage.getItem("high-scores") != null) {
         var highScoreArray = JSON.parse(localStorage.getItem("high-scores"));
@@ -159,7 +160,7 @@ var submitHandler = function (event) {
     } else {
         playerArray.push(playerInits);
     }
-    var playerScore = timeLeft;
+    var playerScore = JSON.parse(localStorage.getItem("final-time"));
     highScoreArray.push(playerScore);
 
     localStorage.setItem("high-scores", JSON.stringify(highScoreArray));
@@ -172,9 +173,9 @@ var submitHandler = function (event) {
 };
 
 var createHighScoreSheet = function (highScoreArray, playerArray) {
-    highScoreArray.sort(function (a, b) { return a - b });
+    highScoreArray.sort(function (a, b) { return b - a });
     playerArray.sort(function (a, b) {
-        return highScoreArray.indexOf(a) - highScoreArray.indexOf(b);
+        return highScoreArray.indexOf(b) - highScoreArray.indexOf(a);
     })
 
     var scoreTableTitle = document.createElement("div");
@@ -259,12 +260,12 @@ var startQuiz = function () {
     startButton.addEventListener("click", function () {
         introSection.remove();
         createQuestion(i);
-        startTime(i);
+        startTime();
         viewHighScores();
     });
 };
 
-var startTime = function (i) {
+var startTime = function () {
     document.querySelector("#timer").innerHTML = "Time: " + timeLeft;
 
     var countDown = setInterval(function () {
@@ -273,30 +274,15 @@ var startTime = function (i) {
             document.querySelector("#timer").innerHTML = "Time: " + timeLeft;
         } else if (timeLeft === 0) {
             console.log(timeLeft);
+            localStorage.setItem("final-time", JSON.stringify(timeLeft));
             clearInterval(countDown);
             var removeQuestion = document.querySelector(".question-section");
             removeQuestion.remove();
             console.log("show score", timeLeft);
             showFinalScore();
         }
-    }, 500);
+    }, 1000);
 };
 
 startQuiz();
 viewHighScores();
-
-
-
-// // draft code from class
-// const timerEl = document.createElement('div');
-// let time = 100;
-// timerEl.textContent = 0;
-
-// function countdown(time) {
-//     if (time <= 0) return;
-//     setTimeout(function () {
-//         timerEl.textContent = time;
-//         time--;
-//         countdown(time);
-//     }, 1000);
-//     }
