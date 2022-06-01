@@ -1,26 +1,26 @@
 var questions = [
     {
         qId: 0,
-        questionPrompt: "Question 1",
-        choice: ["Answer A", "Answer B", "Answer C", "Answer D"],
+        questionPrompt: "Which of the following keywords is used to define a variable in JavaScript?",
+        choice: ["var", "const", "function", "if"],
         verify: [1, 0, 0, 0]
     },
     {
         qId: 1,
-        questionPrompt: "Question 2",
-        choice: ["Answer A", "Answer B", "Answer C", "Answer D"],
+        questionPrompt: "Question2",
+        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
         verify: [0, 1, 0, 0]
     },
     {
         qId: 2,
-        questionPrompt: "Question 3",
-        choice: ["Answer A", "Answer B", "Answer C", "Answer D"],
+        questionPrompt: "Question3",
+        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
         verify: [0, 0, 1, 0]
     },
     {
         qId: 3,
-        questionPrompt: "Question 4",
-        choice: ["Answer A", "Answer B", "Answer C", "Answer D"],
+        questionPrompt: "Question4",
+        choice: ["AnswerA", "AnswerB", "AnswerC", "AnswerD"],
         verify: [0, 0, 0, 1]
     }
 ];
@@ -40,6 +40,7 @@ var createQuestion = function (i) {
     questionSection.appendChild(askQuestion);
 
     var listSection = document.createElement("ol");
+    listSection.className = "list-section";
     questionSection.appendChild(listSection);
 
     for (var j = 0; j < questions[i].choice.length; j++) {
@@ -62,12 +63,13 @@ var createQuestion = function (i) {
 
 // for handling each answer choice click event
 var selectHandler = function (event, i) {
-    // need validation for right or wrong
+    //  validation for right or wrong
     var selection = parseInt(event.target.getAttribute("verify"));
+    event.target.id = "list-choice-clicked";
     if (selection === 0) {
+        // create "WRONG" element
         var wrongEl = document.createElement("p");
-        wrongEl.className = "wrong-element";
-        wrongEl.className = "validation";
+        wrongEl.className = "wrong-element validation";
         wrongEl.innerHTML = "WRONG!";
         document.body.appendChild(wrongEl);
         timeLeft = timeLeft - 5;
@@ -75,8 +77,7 @@ var selectHandler = function (event, i) {
     else {
         // create "RIGHT" element
         var rightEl = document.createElement("p");
-        rightEl.className = "right-element";
-        rightEl.className = "validation";
+        rightEl.className = "right-element validation";
         rightEl.innerHTML = "RIGHT!";
         document.body.appendChild(rightEl);
     }
@@ -109,7 +110,7 @@ var showFinalScore = function () {
 
     var finishMessage = document.createElement("div");
     finishMessage.id = "finish-message";
-    finishMessage.innerHTML = "All Done!";
+    finishMessage.innerHTML = "Finished!";
 
     var userScoreMessage = document.createElement("div");
     userScoreMessage.id = "user-score-message";
@@ -117,7 +118,7 @@ var showFinalScore = function () {
 
     var userInits = document.createElement("div");
     userInits.id = "user-inits";
-    userInits.innerHTML = "Enter initials <input type='text' name='initials' placeholder='Enter Initials' />"
+    userInits.innerHTML = "<input type='text' name='initials' placeholder='Enter Initials' />"
 
     var submitInits = document.createElement("button");
     submitInits.className = "btn";
@@ -152,7 +153,8 @@ var submitHandler = function (event) {
     // store initials to new variable
     var playerInits = (document.querySelector("input[name='initials']").value);
     if (!playerInits || playerInits.length > 10 || playerInits.length < 3) {
-        alert("Enter name or initials between 3 and 10 characters to continue...")
+        alert("Enter name or initials between 3 and 10 characters to continue...");
+        clickCounter = 0;
         return playerInits;
     } else {
         playerArray.push(playerInits);
@@ -170,6 +172,11 @@ var submitHandler = function (event) {
 };
 
 var createHighScoreSheet = function (highScoreArray, playerArray) {
+    highScoreArray.sort(function (a, b) { return a - b });
+    playerArray.sort(function (a, b) {
+        return highScoreArray.indexOf(a) - highScoreArray.indexOf(b);
+    })
+
     var scoreTableTitle = document.createElement("div");
     scoreTableTitle.id = "score-title";
     scoreTableTitle.innerHTML = "HIGH SCORES";
@@ -193,6 +200,35 @@ var createHighScoreSheet = function (highScoreArray, playerArray) {
         highScoreRow.appendChild(scoreEl);
         highScoreRow.appendChild(playerEl);
     }
+
+    var finalOptions = document.createElement("div");
+    finalOptions.id = "final-options";
+    document.body.appendChild(finalOptions);
+
+    var startOver = document.createElement("button");
+    startOver.id = "go-back-button";
+    startOver.className = "btn";
+    startOver.textContent = "Try Again";
+    finalOptions.appendChild(startOver);
+    startOver.addEventListener("click", function () {
+        location.reload();
+    });
+
+    var clearScores = document.createElement("button");
+    clearScores.id = "clear-scores-button";
+    clearScores.classList = "btn"
+    clearScores.textContent = "Clear Scores"
+    finalOptions.appendChild(clearScores);
+    clearScores.addEventListener("click", function () {
+        localStorage.clear();
+        var highScoreArray = [];
+        var playerArray = [];
+        while (document.body.firstChild) {
+            document.body.removeChild(document.body.lastChild);
+        }
+        createHighScoreSheet(highScoreArray, playerArray);
+
+    })
 };
 
 var viewHighScores = function () {
@@ -205,20 +241,16 @@ var viewHighScores = function () {
         var highScoreArray = [];
         var playerArray = [];
     }
+
+    // view scores and remove all other content on page
     var viewScoreEl = document.querySelector("#view-scores");
     viewScoreEl.addEventListener("click", function () {
-        console.log("hi");
         while (document.body.firstChild) {
             document.body.removeChild(document.body.lastChild);
         }
         createHighScoreSheet(highScoreArray, playerArray);
     });
-    // when clicked, first remove everything else from page
-
-    // then add High Score table
-
 };
-
 
 // start the quiz
 var startQuiz = function () {
@@ -247,8 +279,24 @@ var startTime = function (i) {
             console.log("show score", timeLeft);
             showFinalScore();
         }
-    }, 1000);
+    }, 500);
 };
 
 startQuiz();
 viewHighScores();
+
+
+
+// // draft code from class
+// const timerEl = document.createElement('div');
+// let time = 100;
+// timerEl.textContent = 0;
+
+// function countdown(time) {
+//     if (time <= 0) return;
+//     setTimeout(function () {
+//         timerEl.textContent = time;
+//         time--;
+//         countdown(time);
+//     }, 1000);
+//     }

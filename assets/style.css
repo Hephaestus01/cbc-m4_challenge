@@ -1,6 +1,19 @@
+:root {
+    --color-1: #1d3354;
+    --color-2: #467599;
+    --color-3: #9ed8db;
+    --color-4: #d64045;
+
+}
+
 * {
-    background-color: rgb(7, 7, 31);
-    color: bisque;
+    background-color: #e9fff9;
+    color: var(--color-1);
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 1.2em;
 }
 
 /* header styles */
@@ -8,6 +21,20 @@ header {
     display: flex;
     justify-content: space-between;
     padding: 50px;
+}
+
+/* button styles */
+.btn {
+    background-color: var(--color-2);
+    color: var(--color-3);
+    padding: 30px;
+    margin: 20px;
+    font-size: 1.2em;
+}
+
+.next-button {
+    display: block;
+    margin: auto;
 }
 
 /* intro styles */
@@ -18,17 +45,11 @@ header {
     flex-direction: column;
 }
 
-
-/* button styles */
-.btn {
-    background-color: green;
-    color: black;
-    padding: 30px 30px;
-}
-
-.next-button {
-    display: block;
-    margin: auto;
+#intro p {
+    margin: 0 auto;
+    width: 50%;
+    text-align: justify;
+    padding-bottom: 20px;
 }
 
 /* question styles */
@@ -40,27 +61,92 @@ header {
     flex-direction: column;
 }
 
+#list-section {
+    display:flex;
+
+}
+
+#list-choice {
+    display:flex;
+    background-color: var(--color-1);
+    color: var(--color-3);
+    width: 200px;
+    height: 15px;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+}
+
+#list-choice:hover {
+    background-color: var(--color-3);
+    color: var(--color-1);
+}
+
+#list-choice-clicked {
+    display: flex;
+    background-color: var(--color-3);
+    color: var(--color-1);
+    width: 200px;
+    height: 15px;
+    padding: 20px;
+    margin: 20px;
+    text-align: center;
+}
+
+
 /* high scores page */
 #score-wrapper {
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
+    margin: 0 auto;
+    width: 60vw;
 }
 
+#finish-message {
+    font-size: 2.5em;
+}
 
+#user-score-message {
+    font-size: 2.3em;
+    padding: 15px;
+}
 
+#user-inits {
+    font-size: 2.3em;
+    display:flex;
+    justify-content: space-between;
+}
 
+#user-inits input {
+    width: 20vw;
+    height: 40px;
+    display:flex;
+    font-size: 25px;
+}
 
+::placeholder {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
 
 /* Final Score Layout */
+#empty-space {
+    height: 135px;
+}
+
 #score-title {
     display: flex;
     justify-content: center;
-    padding-top: 50px;
+    height: 50px;
+    margin-top:0px;
+    font-size: 25px;
 }
 
 #high-score-row {
-    background: red;
+    background: var(--color-3);
     width: 300px;
     display:flex;
     justify-content: space-evenly;
@@ -74,11 +160,22 @@ header {
 
 #player {
     width: 50%;
-    border: 5px solid white;
+    border: 5px solid var(--color-1);
 }
 
 #score {
     width: 50%;
-    border: 5px solid white;
+    border: 5px solid var(--color-1);
     text-align: center;
+}
+
+#final-options {
+    position:absolute;
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    background: none;
+    top:5px;
+    margin: 0 auto;
+    width:100vw;
 }
