@@ -1,3 +1,4 @@
+// Array of Questions to pull from
 var questions = [
     {
         qId: 0,
@@ -81,6 +82,7 @@ var selectHandler = function (event, i) {
         rightEl.innerHTML = "RIGHT!";
         document.body.appendChild(rightEl);
     }
+    // create NEXT button
     var nextButton = document.createElement("button");
     nextButton.className = "btn next-button";
     nextButton.innerHTML = "NEXT QUESTION";
@@ -101,9 +103,12 @@ var selectHandler = function (event, i) {
     });
 };
 
+// Show the final score the player achieved with new HTML components
 var showFinalScore = function () {
     var timer = document.getElementById("timer");
     timer.remove();
+    var removeViewScores = document.getElementById("view-scores");
+    removeViewScores.remove();
     clickCounter = 0;
 
     var finalScoreWrapper = document.createElement("div")
@@ -125,6 +130,7 @@ var showFinalScore = function () {
     submitInits.className = "btn";
     submitInits.id = "submit-button";
     submitInits.textContent = "Submit";
+    // when user clicks submit button, make sure it can only submit once by tracking click, and then pass to submitHandler()
     submitInits.addEventListener("click", function () {
         clickCounter++;
         if (clickCounter === 1) {
@@ -139,6 +145,7 @@ var showFinalScore = function () {
     document.body.appendChild(finalScoreWrapper);
 };
 
+// submitHandler() will log the score data and track it via localStorage
 var submitHandler = function () {
     // get existing arrays from localStorage or create new array
     if (localStorage.getItem("high-scores") != null) {
@@ -166,12 +173,10 @@ var submitHandler = function () {
     localStorage.setItem("high-scores", JSON.stringify(highScoreArray));
     localStorage.setItem("players", JSON.stringify(playerArray));
 
-    console.log(highScoreArray);
-    console.log(playerArray);
-
     createHighScoreSheet(highScoreArray, playerArray);
 };
 
+// creates the score sheet by passing arrays and then combining them in 2D array to pull from
 var createHighScoreSheet = function (highScoreArray, playerArray) {
     var highScoreTable = highScoreArray.map(function (x, i) {
         return [x, playerArray[i]];
@@ -180,8 +185,6 @@ var createHighScoreSheet = function (highScoreArray, playerArray) {
     highScoreTable.sort(function (a, b) {
         return b[0] - a[0];
     });
-
-    console.log("table is", highScoreTable);
 
     var scoreTableTitle = document.createElement("div");
     scoreTableTitle.id = "score-title";
@@ -233,7 +236,6 @@ var createHighScoreSheet = function (highScoreArray, playerArray) {
             document.body.removeChild(document.body.lastChild);
         }
         createHighScoreSheet(highScoreArray, playerArray);
-
     })
 };
 
@@ -270,6 +272,7 @@ var startQuiz = function () {
     });
 };
 
+// start the timer
 var startTime = function () {
     document.querySelector("#timer").innerHTML = "Time: " + timeLeft;
 
