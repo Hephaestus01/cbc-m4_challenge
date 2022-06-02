@@ -173,10 +173,15 @@ var submitHandler = function () {
 };
 
 var createHighScoreSheet = function (highScoreArray, playerArray) {
-    highScoreArray.sort(function (a, b) { return b - a });
-    playerArray.sort(function (a, b) {
-        return highScoreArray.indexOf(b) - highScoreArray.indexOf(a);
+    var highScoreTable = highScoreArray.map(function (x, i) {
+        return [x, playerArray[i]];
     })
+
+    highScoreTable.sort(function (a, b) {
+        return b[0] - a[0];
+    });
+
+    console.log("table is", highScoreTable);
 
     var scoreTableTitle = document.createElement("div");
     scoreTableTitle.id = "score-title";
@@ -190,12 +195,12 @@ var createHighScoreSheet = function (highScoreArray, playerArray) {
         var scoreEl = document.createElement("div");
         scoreEl.id = "score";
         scoreEl.className = "high-score-item";
-        scoreEl.innerHTML = highScoreArray[i];
+        scoreEl.innerHTML = highScoreTable[i][0];
 
         var playerEl = document.createElement("div");
         playerEl.id = "player";
         playerEl.className = "high-score-item";
-        playerEl.innerHTML = playerArray[i];
+        playerEl.innerHTML = highScoreTable[i][1];
 
         document.body.appendChild(highScoreRow);
         highScoreRow.appendChild(scoreEl);
